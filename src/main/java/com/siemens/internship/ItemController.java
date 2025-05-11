@@ -35,7 +35,7 @@ public class ItemController {
     public ResponseEntity<Item> getItemById(@PathVariable Long id) {
         return itemService.findById(id)
                 .map(item -> new ResponseEntity<>(item, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Status NO_CONTENT was misused
     }
 
     @PutMapping("/{id}")

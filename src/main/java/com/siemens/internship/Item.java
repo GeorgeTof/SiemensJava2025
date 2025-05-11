@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Item {
     private String description;
     private String status;
 
-    // Add email regex validation
+    // Clean annotation for email validation, a custom regex could have been used, but it would have been more difficult and risky to implement correctly
+    @Email
     private String email;
 }
