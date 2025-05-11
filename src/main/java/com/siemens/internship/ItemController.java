@@ -24,9 +24,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item, BindingResult result) {
+    public ResponseEntity<?> createItem(@Valid @RequestBody Item item, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  // Status codes were reversed
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST); // Properly return errors of invalid fields
         }
         return new ResponseEntity<>(itemService.save(item), HttpStatus.CREATED);
     }
@@ -39,13 +39,17 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item) {
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @Valid @RequestBody Item item, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST); // Properly return validation errors
+        }
+
         Optional<Item> existingItem = itemService.findById(id);
         if (existingItem.isPresent()) {
             item.setId(id);
-            return new ResponseEntity<>(itemService.save(item), HttpStatus.ACCEPTED); // Status codes were reversed
+            return new ResponseEntity<>(itemService.save(item), HttpStatus.ACCEPTED);
         } else {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Status code CREATED was unsuitable
         }
     }
 
